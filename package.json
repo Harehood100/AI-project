@@ -1,0 +1,23 @@
+{
+  "name": "ai-frontend-helper",
+  "version": "1.0.0",
+  "description": "AI-powered frontend helper project with React components",
+  "main": "index.html",
+  "scripts": {
+    "start": "open index.html",
+    "deploy": "echo 'Push to GitHub to deploy on GitHub Pages'"
+  },
+  "keywords": [
+    "ai",
+    "react",
+    "frontend",
+    "components",
+    "personalization"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ai-frontend-helper.git"
+  }
+}

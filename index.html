@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Frontend Helper</title>
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .navbar-menu {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .navbar-menu a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-menu a:hover {
+      color: #667eea;
+    }
+
+    .user-greeting {
+      font-weight: 500;
+      color: #667eea;
+    }
+
+    /* Hero Section Styles */
+    .hero-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+      min-height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: slideDown 0.8s ease;
+    }
+
+    .hero-subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+      animation: fadeIn 1s ease;
+    }
+
+    .ai-generated-content {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 1.5rem 0;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Card Styles */
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #667eea;
+    }
+
+    .card-description {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .card-personalized {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Form Styles */
+    .form-container {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      max-width: 500px;
+      margin: 2rem auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-title {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: #667eea;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+    }
+
+    .form-button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .form-button:hover {
+      transform: scale(1.02);
+    }
+
+    .form-response {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f0f4ff;
+      border-left: 4px solid #667eea;
+      border-radius: 5px;
+      color: #667eea;
+      font-weight: 500;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar-menu {
+        gap: 1rem;
+      }
+
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .cards-container {
+        grid-template-columns: 1fr;
+        padding: 2rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // AI Text Generation Mock Function
+    const generateAIContent = (type, userName) => {
+      const contentMap = {
+        welcome: `Welcome ${userName}! Discover how our AI-powered tools can transform your frontend development. Accelerate your workflow and create stunning UIs effortlessly.`,
+        feature1: `Personalized for ${userName}: AI-powered component generation that adapts to your coding style and preferences.`,
+        feature2: `Personalized for ${userName}: Smart code suggestions and auto-completion to boost productivity.`,
+        feature3: `Personalized for ${userName}: Real-time design suggestions and accessibility checks for better UX.`,
+      };
+      return contentMap[type] || 'AI Generated Content';
+    };
+
+    // Navbar Component
+    function Navbar({ userName }) {
+      return (
+        <nav className="navbar">
+          <div className="navbar-brand">🤖 AI Helper</div>
+          <ul className="navbar-menu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#contact">Contact</a></li>
+            {userName && <li className="user-greeting">👋 {userName}</li>}
+          </ul>
+        </nav>
+      );
+    }
+
+    // Hero Section Component
+    function HeroSection({ userName }) {
+      return (
+        <section className="hero-section">
+          <h1 className="hero-title">AI Frontend Assistant</h1>
+          <p className="hero-subtitle">Build faster. Code smarter. Design better.</p>
+          <div className="ai-generated-content">
+            {generateAIContent('welcome', userName)}
+          </div>
+        </section>
+      );
+    }
+
+    // Card Component
+    function Card({ icon, title, description, userName }) {
+      return (
+        <div className="card">
+          <div className="card-icon">{icon}</div>
+          <h3 className="card-title">{title}</h3>
+          <p className="card-description">{description}</p>
+          <div className="card-personalized">
+            {generateAIContent(`feature${Math.floor(Math.random() * 3) + 1}`, userName)}
+          </div>
+        </div>
+      );
+    }
+
+    // Form Component
+    function Form({ onSubmit }) {
+      const [formData, setFormData] = React.useState({
+        name: '',
+        email: '',
+        message: ''
+      });
+      const [submitted, setSubmitted] = React.useState(false);
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (formData.name && formData.email && formData.message) {
+          onSubmit(formData);
+          setFormData({ name: '', email: '', message: '' });
+          setSubmitted(true);
+          setTimeout(() => setSubmitted(false), 3000);
+        }
+      };
+
+      return (
+        <div className="form-container">
+          <h2 className="form-title">Get AI Insights</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="form-label">Your Name</label>
+              <input
+                type="text"
+                name="name"
+                className="form-input"
+                placeholder="John Doe"
+                value={formData.name}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Email</label>
+              <input
+                type="email"
+                name="email"
+                className="form-input"
+                placeholder="john@example.com"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Message</label>
+              <input
+                type="text"
+                name="message"
+                className="form-input"
+                placeholder="Tell us what you need..."
+                value={formData.message}
+                onChange={handleChange}
+              />
+            </div>
+            <button type="submit" className="form-button">Submit</button>
+            {submitted && (
+              <div className="form-response">
+                ✨ Thanks {formData.name}! We'll get back to you soon with AI-powered suggestions!
+              </div>
+            )}
+          </form>
+        </div>
+      );
+    }
+
+    // Main App Component
+    function App() {
+      const [userName, setUserName] = React.useState(localStorage.getItem('userName') || 'Developer');
+
+      React.useEffect(() => {
+        if (!localStorage.getItem('userName')) {
+          const name = prompt('Welcome! What\'s your name?') || 'Developer';
+          localStorage.setItem('userName', name);
+          setUserName(name);
+        }
+      }, []);
+
+      const handleFormSubmit = (data) => {
+        localStorage.setItem('userName', data.name);
+        setUserName(data.name);
+      };
+
+      return (
+        <div>
+          <Navbar userName={userName} />
+          <HeroSection userName={userName} />
+          
+          <div className="cards-container">
+            <Card
+              icon="⚡"
+              title="Lightning Fast"
+              description="Generate React components in seconds with AI assistance."
+              userName={userName}
+            />
+            <Card
+              icon="🎨"
+              title="Beautiful Design"
+              description="Pre-styled components with modern CSS and animations."
+              userName={userName}
+            />
+            <Card
+              icon="📱"
+              title="Responsive"
+              description="Mobile-first components that look great on any device."
+              userName={userName}
+            />
+          </div>
+
+          <Form onSubmit={handleFormSubmit} />
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
